@@ -57,11 +57,6 @@ form.addEventListener('submit', async (event) => {
     transformBtn.classList.remove('is-loading');
     transformBtn.textContent = 'Transformieren';
   }
-  window.setTimeout(() => {
-    transformBtn.classList.remove('is-loading');
-    transformBtn.textContent = 'Transformieren';
-    openModal('Formular geprüft. Die Transformation wurde erfolgreich simuliert.');
-  }, 650);
 });
 
 
