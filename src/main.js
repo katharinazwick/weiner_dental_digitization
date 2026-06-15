@@ -49,7 +49,6 @@ form.addEventListener('submit', async (event) => {
   window.setTimeout(() => {
     transformBtn.classList.remove('is-loading');
     transformBtn.textContent = 'Transformieren';
-    //der Button schickt mich erst nach oben und dann bin ich wieder unten, der soll oben bleiben
     openModal('Formular geprüft. Die Transformation wurde erfolgreich simuliert.');
   }, 650);
 });
