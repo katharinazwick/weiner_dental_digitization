@@ -1,5 +1,6 @@
 import { renderApp } from './render.js';
 import { validateForm, scrollToFirstInvalid, collectFormData } from './validation.js';
+import {sendToLangdock} from "./langdockConnection.js";
 
 const app = document.querySelector('#app');
 app.innerHTML = renderApp();
@@ -41,17 +42,20 @@ form.addEventListener('submit', async (event) => {
   }
 
   const payload = collectFormData(form);
-  console.log('Transformieren simuliert:', payload);
 
   transformBtn.classList.add('is-loading');
   transformBtn.textContent = 'Verarbeite…';
 
-  window.setTimeout(() => {
+  try {
+    await sendToLangdock(payload);
+    openModal('Formular geprüft und an Langdock gesendet.');
+  } catch (err) {
+    console.error(err);
+    openModal('Senden fehlgeschlagen. Bitte später erneut versuchen.');
+  } finally {
     transformBtn.classList.remove('is-loading');
     transformBtn.textContent = 'Transformieren';
-    //der Button schickt mich erst nach oben und dann bin ich wieder unten, der soll oben bleiben
-    openModal('Formular geprüft. Die Transformation wurde erfolgreich simuliert.');
-  }, 650);
+  }
 });
 
 
