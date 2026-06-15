@@ -1,5 +1,6 @@
 import { renderApp } from './render.js';
 import { validateForm, scrollToFirstInvalid, collectFormData } from './validation.js';
+import {sendToLangdock} from "./langdockConnection.js";
 
 const app = document.querySelector('#app');
 app.innerHTML = renderApp();
@@ -46,6 +47,16 @@ form.addEventListener('submit', async (event) => {
   transformBtn.classList.add('is-loading');
   transformBtn.textContent = 'Verarbeite…';
 
+  try {
+    await sendToLangdock(payload);
+    openModal('Formular geprüft und an Langdock gesendet.');
+  } catch (err) {
+    console.error(err);
+    openModal('Senden fehlgeschlagen. Bitte später erneut versuchen.');
+  } finally {
+    transformBtn.classList.remove('is-loading');
+    transformBtn.textContent = 'Transformieren';
+  }
   window.setTimeout(() => {
     transformBtn.classList.remove('is-loading');
     transformBtn.textContent = 'Transformieren';

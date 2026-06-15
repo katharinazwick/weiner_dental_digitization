@@ -75,12 +75,12 @@ function appointmentRow(row) {
       <th scope="row">${escapeHtml(row.label)}</th>
       <td>
         <select class="control control-small" name="${row.id}_day" id="${row.id}_day" ${row.required ? 'data-required="true"' : ''}>
-          ${optionMarkup(dayOptions, 'mo')}
+          ${optionMarkup(dayOptions, 'null')}
         </select>
       </td>
       <td>
         <select class="control control-small" name="${row.id}_time" id="${row.id}_time" ${row.required ? 'data-required="true"' : ''}>
-          ${optionMarkup(timeOptions, '10:00')}
+          ${optionMarkup(timeOptions, '8:00')}
         </select>
       </td>
     </tr>
