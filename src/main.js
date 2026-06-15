@@ -59,8 +59,6 @@ form.addEventListener('submit', async (event) => {
   }
 });
 
-
-// Visual feedback for invalid states on interaction
 form.addEventListener('input', (event) => {
   const target = event.target;
   const field = target.closest('.field');
