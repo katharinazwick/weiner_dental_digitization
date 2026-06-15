@@ -47,7 +47,7 @@ export const typeOptions = [
   { value: 'teilprothese', label: 'Teilprothese' },
   { value: 'vollprothese', label: 'Vollprothese' },
   { value: 'implantat', label: 'Implantat' },
-  { value: 'sonstiges', label: 'Sonstiges' }, //freitextfeld generieren??
+  { value: 'sonstiges', label: 'Sonstiges' },
 ];
 
 export const toothStatusOptions = [
@@ -90,6 +90,28 @@ export const toothNumbers = {
   upperLeft:  ['21','22','23','24','25','26','27','28'],
   lowerRight: ['48','47','46','45','44','43','42','41'],
   lowerLeft:  ['31','32','33','34','35','36','37','38'],
+};
+
+//Vorlage für Präsi
+export const defaultValues = {
+  orderType: 'regelversorgung',
+  patientName: 'Max Mustermann',
+  dentistName: 'Dr. med. dent. Anna Schulz',
+  practiceName: 'Praxis am Park',
+  dentistAddress: 'Musterstraße 12, 45127 Essen',
+  patientAge: '34',
+  patientGender: 'männlich',
+  insurance: 'gesetzlich',
+  xmlNumber: 'XML-2026-0421',
+  shade: 'A2',
+  alloy: 'CoCr',
+  toothForm: 'anatomisch',
+  type: 'krone',
+  contractService: 'Keramikverblendete Krone im Seitenzahnbereich',
+  privateService: 'Individuelle Farbabstimmung und Hochglanzpolitur',
+  phoneNote: 'Bitte vor Rückfragen kurz telefonisch melden.',
+  deliveredWith: 'Abdruck, Bissregistrat und Farbfoto',
+  completionNote: 'Fertigstellung nach Rücksprache',
 };
 
 export const toothDefaultStatus = 'ok';
