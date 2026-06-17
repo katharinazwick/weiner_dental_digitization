@@ -5,6 +5,38 @@ import {sendToLangdock} from "./langdockConnection.js";
 const app = document.querySelector('#app');
 app.innerHTML = renderApp();
 
+// Testlink: Felder automatisch befüllen wenn URL test vorhanden
+if (new URLSearchParams(window.location.search).has('test')) {
+  import('./data.js').then(({ defaultValues }) => {
+    // Texteingaben und Textareas
+    Object.entries(defaultValues).forEach(([key, value]) => {
+      const el = document.querySelector(`[name="${key}"], #${key}`);
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+        el.value = value;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+
+    // Selects / Dropdowns
+    ['insurance', 'shade', 'alloy', 'toothForm', 'type'].forEach(key => {
+      const el = document.querySelector(`[name="${key}"]`);
+      if (el) {
+        el.value = defaultValues[key];
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+
+    // Radio Buttons (orderType, patientGender)
+    ['orderType', 'patientGender'].forEach(key => {
+      const radio = document.querySelector(`input[name="${key}"][value="${defaultValues[key]}"]`);
+      if (radio) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+  });
+}
+
 const form = document.querySelector('#labForm');
 const modalBackdrop = document.querySelector('#modalBackdrop');
 const modalMessage = document.querySelector('#modalMessage');
@@ -55,7 +87,7 @@ form.addEventListener('submit', async (event) => {
     openModal('Senden fehlgeschlagen. Bitte später erneut versuchen.');
   } finally {
     transformBtn.classList.remove('is-loading');
-    transformBtn.textContent = 'Transformieren';
+    transformBtn.textContent = 'Absenden';
   }
 });
 
