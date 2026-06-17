@@ -16,7 +16,7 @@ export const insuranceOptions = [
 ];
 
 export const shadeOptions = [
-    'A1', 'A2', 'A3', 'A3.5', 'A4',
+    '', 'A1', 'A2', 'A3', 'A3.5', 'A4',
     'B1', 'B2', 'B3', 'B4',
     'C1', 'C2', 'C3', 'C4',
     'D2', 'D3', 'D4',
@@ -24,6 +24,7 @@ export const shadeOptions = [
 ].map(value => ({value, label: value}));
 
 export const alloyOptions = [
+    {value: '', label: ''},
     {value: 'CoCr', label: 'CoCr-Legierung'},
     {value: 'Gold', label: 'Hochgoldlegierung'},
     {value: 'Titan', label: 'Titan'},
@@ -35,6 +36,7 @@ export const alloyOptions = [
 
 export const toothFormOptions = [
     {value: 'anatomisch', label: 'anatomisch'},
+    {value: '', label: ''},
     {value: 'leicht_ovalt', label: 'leicht oval'},
     {value: 'oval', label: 'oval'},
     {value: 'rechteckig', label: 'rechteckig'},
@@ -42,6 +44,7 @@ export const toothFormOptions = [
 ];
 
 export const typeOptions = [
+    {value: '', label: ''},
     {value: 'krone', label: 'Krone'},
     {value: 'bruecke', label: 'Brücke'},
     {value: 'teilprothese', label: 'Teilprothese'},
@@ -71,7 +74,7 @@ export const appointmentRows = [
 ];
 
 export const dayOptions = [
-    {value: 'null',label: 'Tag'},
+    {value: '', label: ''},
     {value: 'mo', label: 'Mo'},
     {value: 'di', label: 'Di'},
     {value: 'mi', label: 'Mi'},
@@ -95,3 +98,25 @@ export const toothNumbers = {
 };
 
 export const toothDefaultStatus = 'ok';
+
+export const defaultValues = {
+    orderType: 'regelversorgung',
+    patientName: 'Vorname Nachname',
+    dentistName: 'Dr. med. dent. Nachname',
+    practiceName: 'Praxis am Park',
+    dentistAddress: 'Musterstraße 12, 14482 Potsdam',
+    practiceAdress:'Nachname@email.com',
+    patientAge: '34',
+    patientGender: 'männlich',
+    insurance: 'gesetzlich',
+    xmlNumber: 'XML-2026-0421',
+    shade: 'A2',
+    alloy: 'CoCr',
+    toothForm: 'anatomisch',
+    type: 'krone',
+    contractService: 'Keramikverblendete Krone im Seitenzahnbereich',
+    privateService: 'Individuelle Farbabstimmung und Hochglanzpolitur',
+    phoneNote: 'Bitte vor Rückfragen kurz telefonisch melden.',
+    deliveredWith: 'Abdruck, Bissregistrat und Farbfoto',
+    completionNote: 'Fertigstellung nach Rücksprache',
+};

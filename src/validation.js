@@ -94,6 +94,6 @@ export function collectFormData(form) {
   form.querySelectorAll('.schedule-table select').forEach((select) => {
     data.schedule[select.name] = select.value;
   });
-
+console.log(data)
   return data;
 }
