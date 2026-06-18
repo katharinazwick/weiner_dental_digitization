@@ -86,7 +86,7 @@ function appointmentRow(row, v = {}) {
       </td>
       <td>
         <select class="control control-small" name="${row.id}_time" id="${row.id}_time" ${row.required ? 'data-required="true"' : ''}>
-          ${optionMarkup(timeOptions, '8:00')}
+          ${optionMarkup(timeOptions, '')}
         </select>
       </td>
     </tr>

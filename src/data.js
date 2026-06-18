@@ -82,15 +82,12 @@ export const dayOptions = [
     {value: 'sa', label: 'Sa'},
 ];
 
-
-export const getDateValue = (dateString) => dateString || "";
-
-export const timeOptions = [
-    '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
-    '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
-    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
-    '17:00', '17:30', '18:00', '18:30', '19:00'
-].map(value => ({value, label: value}));
+export const timeOptions = Array.from({ length: 29 }, (_, i) => {
+    const totalMinutes = 6 * 60 + i * 30;
+    const hh = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
+    const mm = totalMinutes % 60 === 0 ? '00' : '30';
+    return { value: `${hh}:${mm}`, label: `${hh}:${mm}` };
+});
 
 export const toothNumbers = {
     upperRight: ['18', '17', '16', '15', '14', '13', '12', '11'],
