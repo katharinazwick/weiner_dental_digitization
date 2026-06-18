@@ -50,7 +50,6 @@ export const typeOptions = [
     {value: 'teilprothese', label: 'Teilprothese'},
     {value: 'vollprothese', label: 'Vollprothese'},
     {value: 'implantat', label: 'Implantat'},
-    {value: 'sonstiges', label: 'Sonstiges'}, //freitextfeld generieren??
 ];
 
 export const toothStatusOptions = [
@@ -105,7 +104,7 @@ export const defaultValues = {
     dentistName: 'Dr. med. dent. Nachname',
     practiceName: 'Praxis am Park',
     dentistAddress: 'Musterstraße 12, 14482 Potsdam',
-    practiceAdress:'Nachname@email.com',
+    practiceEmail   :'Nachname@email.com',
     patientAge: '34',
     patientGender: 'männlich',
     insurance: 'gesetzlich',

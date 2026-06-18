@@ -204,6 +204,11 @@ export function renderApp(v = {}) {
         label: 'Praxis / Anschrift',
         value: v.practiceName ? v.practiceName + (v.dentistAddress ? ', ' + v.dentistAddress : '') : '',
         required: true,
+    })} ${inputField({
+        id: 'practiceEmail',
+        label: 'Praxis / Email',
+        value: v.practiceEmail ?? '',
+        required: true,
     })}
           </div>
         </section>
