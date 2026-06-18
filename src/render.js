@@ -1,7 +1,6 @@
 import {
     orderTypes, genderOptions, insuranceOptions, shadeOptions, alloyOptions,
-    toothFormOptions, typeOptions, toothStatusOptions, appointmentRows,
-    dayOptions, timeOptions, toothNumbers, toothDefaultStatus,
+    toothFormOptions, typeOptions, toothStatusOptions, appointmentRows, timeOptions, toothNumbers, toothDefaultStatus,
 } from './data.js';
 
 const escapeHtml = (value) => String(value)
@@ -69,14 +68,21 @@ function selectField({ id, label, options, selectedValue, required = false, comp
   `;
 }
 
-function appointmentRow(row) {
+function appointmentRow(row, v = {}) {
+    const dayValue = v[`${row.id}_day`] ?? '';
     return `
-    <tr>
-      <th scope="row">${escapeHtml(row.label)}</th>
+    <tr class="${row.required ? 'required-row' : ''}">
+      <th scope="row">${escapeHtml(row.label)}${row.required ? ' <span class="required-star" aria-hidden="true">*</span>' : ''}</th>
       <td>
-        <select class="control control-small" name="${row.id}_day" id="${row.id}_day" ${row.required ? 'data-required="true"' : ''}>
-          ${optionMarkup(dayOptions, 'null')}
-        </select>
+        <input 
+        type="date" 
+        class="control control-small" 
+        name="${row.id}_day" 
+        id="${row.id}_day"
+        style="width: 100%;"
+        value="${escapeHtml(dayValue)}"
+        ${row.required ? 'data-required="true"' : ''}
+/>
       </td>
       <td>
         <select class="control control-small" name="${row.id}_time" id="${row.id}_time" ${row.required ? 'data-required="true"' : ''}>
@@ -131,9 +137,6 @@ export function renderApp(v = {}) {
         <div>
           <p class="eyebrow">Zahntechnischer Meisterbetrieb</p>
           <h1>Weiner Dentaltechnik — digitale Auftragsmaske</h1>
-          <p class="hero-copy">
-            ...
-          </p>
         </div>
         <div class="hero-badge">
           <span>ISO 3950</span>
@@ -298,13 +301,12 @@ export function renderApp(v = {}) {
           <div class="schedule-card">
             <div class="schedule-head">
               <span>Termin</span>
-              <span>Tag</span>
+              <span>Datum</span>
               <span>Uhr</span>
             </div>
             <table class="schedule-table">
               <tbody>
-                ${appointmentRows.map(appointmentRow).join('')}
-              </tbody>
+${appointmentRows.map(row => appointmentRow(row, v)).join('')}              </tbody>
             </table>
           </div>
 

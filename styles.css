@@ -159,6 +159,10 @@ h1{
   content:" *";
   color:var(--accent);
 }
+.required-star {
+  color: var(--accent);
+  font-weight: 600;
+}
 .helper-line{
   min-height:52px;
   border-radius:16px;
@@ -327,7 +331,9 @@ h1{
   color:#433d37;
   background:#faf7f4;
 }
-
+.schedule-head {
+  grid-template-columns: 60% 29% 30%;
+}
 .actions{
   display:flex;
   justify-content:flex-end;

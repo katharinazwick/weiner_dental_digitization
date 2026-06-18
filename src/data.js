@@ -82,6 +82,9 @@ export const dayOptions = [
     {value: 'sa', label: 'Sa'},
 ];
 
+
+export const getDateValue = (dateString) => dateString || "";
+
 export const timeOptions = [
     '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
     '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
@@ -118,4 +121,5 @@ export const defaultValues = {
     phoneNote: 'Bitte vor Rückfragen kurz telefonisch melden.',
     deliveredWith: 'Abdruck, Bissregistrat und Farbfoto',
     completionNote: 'Fertigstellung nach Rücksprache',
+    auftragsdatum_day: new Date().toISOString().split('T')[0],
 };
