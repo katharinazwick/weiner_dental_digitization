@@ -22,6 +22,7 @@ export function validateForm(form) {
   const exempt = new Set(exemptFieldsWhenReparatur);
 
   const invalidFields = [];
+  const errors = [];
   const requiredInputs = form.querySelectorAll('[data-required="true"]');
   requiredInputs.forEach((element) => {
     if (isReparatur && exempt.has(element.id)) return;
@@ -74,16 +75,19 @@ export function validateForm(form) {
     }
   });
 
-  // Vorname + Nachname ODER Patientennummer: eine der beiden Varianten muss vollständig ausgefüllt sein
+  // Vorname + Nachname ODER Patientennummer: genau eine der beiden Varianten muss ausgefüllt sein (XOR, kein "beides" und kein "keins")
   const firstNameEl = form.querySelector('#patientFirstName');
   const lastNameEl = form.querySelector('#patientSecondName');
   const patientNumberEl = form.querySelector('#patientNumber');
 
   if (firstNameEl && lastNameEl && patientNumberEl) {
     const hasFullName = !isBlank(firstNameEl.value) && !isBlank(lastNameEl.value);
+    const hasPartialName = isBlank(firstNameEl.value) !== isBlank(lastNameEl.value); // nur eines der beiden Namensfelder gefüllt
     const hasPatientNumber = !isBlank(patientNumberEl.value);
 
-    if (!hasFullName && !hasPatientNumber) {
+    const isXorSatisfied = hasFullName !== hasPatientNumber;
+
+    if (!isXorSatisfied || hasPartialName) {
       [firstNameEl, lastNameEl, patientNumberEl].forEach((el) => {
         const field = el.closest('.field');
         if (field) {
@@ -91,6 +95,12 @@ export function validateForm(form) {
           invalidFields.push(field);
         }
       });
+
+      if (hasFullName && hasPatientNumber) {
+        errors.push('patientIdentifierConflict');
+      } else {
+        errors.push('patientIdentifierMissing');
+      }
     }
   }
 
@@ -140,6 +150,7 @@ export function validateForm(form) {
   return {
     valid: invalidFields.length === 0,
     invalidFields,
+    errors,
   };
 }
 
