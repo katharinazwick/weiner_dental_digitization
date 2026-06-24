@@ -22,6 +22,7 @@ export function validateForm(form) {
   const exempt = new Set(exemptFieldsWhenReparatur);
 
   const invalidFields = [];
+  const errors = [];
   const requiredInputs = form.querySelectorAll('[data-required="true"]');
   requiredInputs.forEach((element) => {
     if (isReparatur && exempt.has(element.id)) return;
@@ -63,7 +64,6 @@ export function validateForm(form) {
 
   const requiredText = [
     form.querySelector('#dentistName'),
-    form.querySelector('#practiceName'),
   ];
 
   requiredText.forEach((el) => {
@@ -75,16 +75,46 @@ export function validateForm(form) {
     }
   });
 
+  // Vorname + Nachname ODER Patientennummer: genau eine der beiden Varianten muss ausgefüllt sein (XOR, kein "beides" und kein "keins")
   const firstNameEl = form.querySelector('#patientFirstName');
   const lastNameEl = form.querySelector('#patientSecondName');
   const patientNumberEl = form.querySelector('#patientNumber');
 
   if (firstNameEl && lastNameEl && patientNumberEl) {
     const hasFullName = !isBlank(firstNameEl.value) && !isBlank(lastNameEl.value);
+    const hasPartialName = isBlank(firstNameEl.value) !== isBlank(lastNameEl.value); // nur eines der beiden Namensfelder gefüllt
     const hasPatientNumber = !isBlank(patientNumberEl.value);
 
-    if (!hasFullName && !hasPatientNumber) {
+    const isXorSatisfied = hasFullName !== hasPatientNumber;
+
+    if (!isXorSatisfied || hasPartialName) {
       [firstNameEl, lastNameEl, patientNumberEl].forEach((el) => {
+        const field = el.closest('.field');
+        if (field) {
+          setInvalid(field);
+          invalidFields.push(field);
+        }
+      });
+
+      if (hasFullName && hasPatientNumber) {
+        errors.push('patientIdentifierConflict');
+      } else {
+        errors.push('patientIdentifierMissing');
+      }
+    }
+  }
+
+  // Praxis - Anschrift + Praxis - Email ODER Praxis-ID: eine der beiden Varianten muss vollständig ausgefüllt sein
+  const practiceNameEl = form.querySelector('#practiceName');
+  const practiceEmailEl = form.querySelector('#practiceEmail');
+  const practiceIdEl = form.querySelector('#practiceId');
+
+  if (practiceNameEl && practiceEmailEl && practiceIdEl) {
+    const hasFullPracticeInfo = !isBlank(practiceNameEl.value) && !isBlank(practiceEmailEl.value);
+    const hasPracticeId = !isBlank(practiceIdEl.value);
+
+    if (!hasFullPracticeInfo && !hasPracticeId) {
+      [practiceNameEl, practiceEmailEl, practiceIdEl].forEach((el) => {
         const field = el.closest('.field');
         if (field) {
           setInvalid(field);
@@ -106,6 +136,7 @@ export function validateForm(form) {
     }
   }
 
+  // Alter ist nur bei Neuantrag Pflicht
   const ageEl = form.querySelector('#patientAge');
   if (ageEl && !(isReparatur && exempt.has('patientAge'))) {
     const field = ageEl.closest('.field');
@@ -119,6 +150,7 @@ export function validateForm(form) {
   return {
     valid: invalidFields.length === 0,
     invalidFields,
+    errors,
   };
 }
 

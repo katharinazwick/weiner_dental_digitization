@@ -20,6 +20,13 @@ function closeModal() {
   modalClose.focus({ preventScroll: true });
 }
 
+function buildValidationMessage(errors = []) {
+  if (errors.length === 1 && errors[0] === 'patientIdentifierConflict') {
+    return 'Bitte nur eins angeben: entweder Vorname + Nachname oder die Patientennummer.';
+  }
+  return 'Bitte alle Pflichtfelder ausfüllen.';
+}
+
 function render(state) {
   app.innerHTML = renderApp(state);
   bindReferences();
@@ -47,7 +54,7 @@ function bindListeners() {
     const result = validateForm(form);
     if (!result.valid) {
       scrollToFirstInvalid(result.invalidFields);
-      openModal('Bitte alle Pflichtfelder ausfüllen.');
+      openModal(buildValidationMessage(result.errors));
       return;
     }
 
@@ -86,6 +93,8 @@ function bindListeners() {
     }
   });
 
+  // Re-Render bei Wechsel der Antragsart, damit Pflichtfeld-Markierungen
+  // (Sternchen, data-required) für Reparatur/Neuantrag korrekt aktualisiert werden.
   form.querySelectorAll('input[name="requestType"]').forEach((radio) => {
     radio.addEventListener('change', () => {
       const currentState = collectFormData(form);

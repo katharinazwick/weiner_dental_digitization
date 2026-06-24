@@ -20,9 +20,10 @@ export function optionMarkup(options, selectedValue) {
     }).join('');
 }
 
-function inputField({ id, label, value = '', required = false, type = 'text', placeholder = '' }) {
+function inputField({ id, label, value = '', required = false, type = 'text', placeholder = '', showStar = null }) {
+    const star = showStar ?? required;
     return `
-    <label class="field ${required ? 'required' : ''}" for="${id}">
+    <label class="field ${star ? 'required' : ''}" for="${id}">
       <span class="field-label">${escapeHtml(label)}</span>
       <input
         id="${id}"
@@ -197,17 +198,20 @@ export function renderApp(v = {}) {
         id: 'patientFirstName',
         label: 'Vorname',
         value: v.patientFirstName ?? '',
+        showStar: true,
     })}
 
     ${inputField({
         id: 'patientSecondName',
         label: 'Nachname',
         value: v.patientSecondName ?? '',
+        showStar: true,
     })} 
 
 ${inputField({
         id: 'patientNumber',
         label: 'Patientennummer',
+        showStar: true,
     })}
 
             ${inputField({
@@ -244,12 +248,16 @@ ${inputField({
         id: 'practiceName',
         label: 'Praxis - Anschrift',
         value: v.practiceName ? v.practiceName + (v.dentistAddress ? ', ' + v.dentistAddress : '') : '',
-        required: true,
-    })} ${inputField({
+    })}
+            ${inputField({
         id: 'practiceEmail',
         label: 'Praxis - Email',
         value: v.practiceEmail ?? '',
-        required: true,
+    })}
+            ${inputField({
+        id: 'practiceId',
+        label: 'Praxis-ID',
+        value: v.practiceId ?? '',
     })}
           </div>
         </section>
