@@ -196,14 +196,14 @@ export function renderApp(v = {}) {
 
             ${inputField({
         id: 'patientFirstName',
-        label: 'Vorname * (ohne Patientennummer)',
+        label: 'Vorname',
         value: v.patientFirstName ?? '',
         showStar: true,
     })}
 
     ${inputField({
         id: 'patientSecondName',
-        label: 'Nachname * (ohne Patientennummer)',
+        label: 'Nachname',
         value: v.patientSecondName ?? '',
         showStar: true,
     })} 
@@ -246,18 +246,8 @@ ${inputField({
     })}
             ${inputField({
         id: 'practiceName',
-        label: 'Praxis - Anschrift',
-        value: v.practiceName ? v.practiceName + (v.dentistAddress ? ', ' + v.dentistAddress : '') : '',
-    })}
-            ${inputField({
-        id: 'practiceEmail',
-        label: 'Praxis - Email',
-        value: v.practiceEmail ?? '',
-    })}
-            ${inputField({
-        id: 'practiceId',
-        label: 'Praxis-ID',
-        value: v.practiceId ?? '',
+        label: 'Praxis ID',
+        required: true,
     })}
           </div>
         </section>

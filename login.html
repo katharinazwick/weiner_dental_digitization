@@ -1,0 +1,376 @@
+  <!DOCTYPE html>
+  <html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weiner Dentaltechnik — Portal (Vorschau)</title>
+    <style>
+      :root{
+        --paper:#f6f4ef;
+        --paper-2:#fffdfa;
+        --ink:#2b2b2b;
+        --muted:#6b675f;
+        --accent:#8c4040;
+        --accent-soft:#d8b1b1;
+        --line:#cfc6bf;
+        --shadow:0 16px 40px rgba(28, 23, 20, 0.10);
+        --radius:22px;
+      }
+
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color:var(--ink);
+        background:
+                radial-gradient(circle at top left, rgba(140,64,64,.08), transparent 28%),
+                linear-gradient(180deg, #faf7f2, #f1ece5 58%, #ece6de);
+        min-height:100%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:28px;
+      }
+
+      .portal-shell{
+        width:100%;
+        max-width:480px;
+      }
+
+      .hero{
+        margin-bottom:20px;
+        padding:22px 24px;
+        background:rgba(255,255,255,.72);
+        border:1px solid rgba(207,198,191,.7);
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        backdrop-filter: blur(10px);
+        text-align:center;
+      }
+
+      .eyebrow{
+        margin:0 0 6px;
+        font-size:.78rem;
+        letter-spacing:.16em;
+        text-transform:uppercase;
+        color:var(--accent);
+        font-weight:700;
+      }
+
+      h1{
+        margin:0;
+        font-size:clamp(1.5rem, 2.4vw, 1.9rem);
+        line-height:1.15;
+      }
+
+      .panel{
+        background:var(--paper-2);
+        border:1px solid rgba(140,64,64,.18);
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        padding:22px;
+        position:relative;
+      }
+
+      .panel::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        border-radius:inherit;
+        pointer-events:none;
+        border:1px solid rgba(140,64,64,.04);
+      }
+
+      .segmented{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px;
+        margin-bottom:20px;
+      }
+      .pill{
+        position:relative;
+        display:block;
+      }
+      .pill input{
+        position:absolute;
+        opacity:0;
+        pointer-events:none;
+      }
+      .pill span{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:12px 14px;
+        border:1.5px solid var(--line);
+        border-radius:14px;
+        background:white;
+        cursor:pointer;
+        transition:all .15s ease;
+        user-select:none;
+        font-weight:700;
+      }
+      .pill input:checked + span{
+        border-color:var(--accent);
+        background:rgba(140,64,64,.08);
+        box-shadow:0 0 0 4px rgba(140,64,64,.08);
+        color:var(--accent);
+      }
+
+      .mode-title{
+        margin:0 0 20px;
+        font-size:1.3rem;
+        text-align:center;
+        color:var(--accent);
+      }
+
+      .field{
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+        margin-bottom:14px;
+      }
+      .field-label{
+        font-size:.9rem;
+        font-weight:600;
+        color:#3b3732;
+      }
+      .required .field-label::after{
+        content:" *";
+        color:var(--accent);
+      }
+
+      .control{
+        width:100%;
+        border:1.5px solid var(--line);
+        border-radius:14px;
+        background:white;
+        padding:12px 14px;
+        font:inherit;
+        color:var(--ink);
+        outline:none;
+        transition:border-color .15s ease, box-shadow .15s ease;
+      }
+      .control:hover{ border-color:#b9aca4; }
+      .control:focus{
+        border-color:var(--accent);
+        box-shadow:0 0 0 4px rgba(140,64,64,.12);
+      }
+
+      .hint{
+        margin:-2px 0 16px;
+        font-size:.85rem;
+        color:var(--muted);
+      }
+
+      .submit-btn{
+        appearance:none;
+        border:none;
+        width:100%;
+        display:block;
+        text-align:center;
+        text-decoration:none;
+        border-radius:999px;
+        padding:14px 22px;
+        font:inherit;
+        font-weight:800;
+        letter-spacing:.02em;
+        cursor:pointer;
+        transition:transform .15s ease, box-shadow .15s ease;
+        background:linear-gradient(180deg, #9d4b4b, #7f3636);
+        color:white;
+        box-shadow:0 12px 25px rgba(127,54,54,.24);
+        margin-top:6px;
+      }
+      .submit-btn:hover{
+        transform:translateY(-1px);
+        color:white;
+      }
+      .submit-btn:visited{
+        color:white;
+      }
+
+      .switch-line{
+        text-align:center;
+        margin-top:16px;
+        font-size:.9rem;
+        color:var(--muted);
+      }
+      .switch-line button{
+        appearance:none;
+        border:none;
+        background:none;
+        color:var(--accent);
+        font-weight:700;
+        cursor:pointer;
+        font:inherit;
+        padding:0;
+        text-decoration:underline;
+      }
+
+      .view{ display:none; }
+      .view.active{ display:block; }
+
+      .demo-flag{
+        position:fixed;
+        top:18px;
+        right:18px;
+        padding:8px 14px;
+        border-radius:999px;
+        background:rgba(140,64,64,.92);
+        color:white;
+        font-size:.78rem;
+        font-weight:700;
+        letter-spacing:.06em;
+        text-transform:uppercase;
+        box-shadow:0 8px 20px rgba(0,0,0,.18);
+      }
+
+      .modal-backdrop{
+        position:fixed;
+        inset:0;
+        background:rgba(18, 14, 12, .42);
+        display:none;
+        place-items:center;
+        padding:20px;
+        z-index:50;
+      }
+      .modal-backdrop.active{ display:grid; }
+      .modal{
+        width:min(420px, 100%);
+        border-radius:24px;
+        background:linear-gradient(180deg, #fff, #fbf8f5);
+        border:1px solid rgba(140,64,64,.18);
+        box-shadow:0 24px 80px rgba(0,0,0,.22);
+        padding:24px;
+        text-align:center;
+      }
+      .modal h3{ margin:0 0 8px; font-size:1.15rem; }
+      .modal p{ margin:0; color:var(--muted); }
+      .modal-btn{
+        appearance:none;
+        border:none;
+        border-radius:999px;
+        padding:12px 20px;
+        font:inherit;
+        font-weight:800;
+        cursor:pointer;
+        background:var(--accent);
+        color:white;
+        margin-top:18px;
+      }
+    </style>
+  </head>
+  <body>
+
+  <div class="demo-flag">Vorschau · noch nicht live</div>
+
+  <div class="portal-shell">
+    <div class="hero">
+      <p class="eyebrow">Zahntechnischer Meisterbetrieb</p>
+      <h1>Weiner Dentaltechnik — Portal</h1>
+    </div>
+
+    <div class="panel">
+      <h2 class="mode-title" id="modeTitle">Anmeldung</h2>
+
+      <!-- ANMELDUNG -->
+      <div class="view active" id="loginView">
+        <label class="field required" for="loginEmail">
+          <span class="field-label">Praxis - Email</span>
+          <input id="loginEmail" type="email" class="control" placeholder="praxis@email.com" />
+        </label>
+        <label class="field required" for="loginPassword">
+          <span class="field-label">Passwort</span>
+          <input id="loginPassword" type="password" class="control" placeholder="••••••••" />
+        </label>
+        <p class="hint">Mit der Praxis-Email und dem Passwort anmelden, das bei der Registrierung vergeben wurde.</p>
+        <a href="index.html" class="submit-btn" id="loginSubmit">Anmelden</a>
+      </div>
+
+      <!-- REGISTRIERUNG -->
+      <div class="view" id="registerView">
+        <label class="field required" for="regPracticeName">
+          <span class="field-label">Praxisname</span>
+          <input id="regPracticeName" type="text" class="control" placeholder="Praxis am Park" />
+        </label>
+        <label class="field required" for="regPracticeAddress">
+          <span class="field-label">Praxis - Anschrift</span>
+          <input id="regPracticeAddress" type="text" class="control" placeholder="Musterstraße 12, 14482 Potsdam" />
+        </label>
+        <label class="field required" for="regPracticeEmail">
+          <span class="field-label">Praxis - Email</span>
+          <input id="regPracticeEmail" type="email" class="control" placeholder="praxis@email.com" />
+        </label>
+        <label class="field required" for="regPassword">
+          <span class="field-label">Passwort</span>
+          <input id="regPassword" type="password" class="control" placeholder="Passwort festlegen" />
+        </label>
+        <p class="hint">Diese Angaben werden für künftige Aufträge automatisch vorausgefüllt.</p>
+        <button type="button" class="submit-btn" id="registerSubmit">Praxis registrieren</button>
+      </div>
+
+      <p class="switch-line" id="switchLine">
+        Noch keine Praxis registriert? <button type="button" id="switchToRegister">Jetzt registrieren</button>
+      </p>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h3 id="modalTitle">Hinweis</h3>
+      <p id="modalMessage"></p>
+      <button type="button" class="modal-btn" id="modalClose">Schließen</button>
+    </div>
+  </div>
+
+  <script>
+    const loginView = document.getElementById('loginView');
+    const registerView = document.getElementById('registerView');
+    const switchLine = document.getElementById('switchLine');
+    const modeTitle = document.getElementById('modeTitle');
+
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalClose = document.getElementById('modalClose');
+
+    function setMode(mode) {
+      const isRegister = mode === 'register';
+      loginView.classList.toggle('active', !isRegister);
+      registerView.classList.toggle('active', isRegister);
+      modeTitle.textContent = isRegister ? 'Registrierung' : 'Anmeldung';
+      switchLine.innerHTML = isRegister
+              ? 'Schon registriert? <button type="button" id="switchToLogin">Zur Anmeldung</button>'
+              : 'Noch keine Praxis registriert? <button type="button" id="switchToRegister">Jetzt registrieren</button>';
+      bindSwitchLink();
+    }
+
+    function bindSwitchLink() {
+      const link = document.getElementById('switchToRegister') || document.getElementById('switchToLogin');
+      if (!link) return;
+      link.addEventListener('click', () => {
+        setMode(link.id === 'switchToRegister' ? 'register' : 'login');
+      });
+    }
+
+    bindSwitchLink();
+
+    function openModal(title, message) {
+      modalTitle.textContent = title;
+      modalMessage.textContent = message;
+      modalBackdrop.classList.add('active');
+    }
+
+    modalClose.addEventListener('click', () => modalBackdrop.classList.remove('active'));
+    modalBackdrop.addEventListener('click', (event) => {
+      if (event.target === modalBackdrop) modalBackdrop.classList.remove('active');
+    });
+
+    document.getElementById('registerSubmit').addEventListener('click', () => {
+      openModal('Vorschau', 'In der echten Anwendung würde die Praxis hier angelegt und die Daten für künftige Aufträge gespeichert.');
+    });
+  </script>
+
+  </body>
+  </html>
