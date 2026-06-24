@@ -1,3 +1,5 @@
+import { exemptFieldsWhenReparatur } from './data.js';
+
 export function isBlank(value) {
   return value == null || String(value).trim() === '';
 }
@@ -15,9 +17,15 @@ function setInvalid(field) {
 export function validateForm(form) {
   clearInvalidState(form);
 
+  const requestTypeEl = form.querySelector('input[name="requestType"]:checked');
+  const isReparatur = requestTypeEl?.value === 'reparatur';
+  const exempt = new Set(exemptFieldsWhenReparatur);
+
   const invalidFields = [];
   const requiredInputs = form.querySelectorAll('[data-required="true"]');
   requiredInputs.forEach((element) => {
+    if (isReparatur && exempt.has(element.id)) return;
+
     const field = element.closest('.field') || element.closest('label') || element.closest('td') || element.closest('.tooth-cell');
     if (!field) return;
 
@@ -28,6 +36,18 @@ export function validateForm(form) {
       }
     }
   });
+
+  const requestTypeGroup = form.querySelector('input[name="requestType"]');
+  if (requestTypeGroup) {
+    const checked = form.querySelector('input[name="requestType"]:checked');
+    const stack = requestTypeGroup.closest('.stack');
+    if (!checked && stack) {
+      stack.classList.add('is-invalid');
+      invalidFields.push(stack);
+    } else if (stack) {
+      stack.classList.remove('is-invalid');
+    }
+  }
 
   const orderTypeGroup = form.querySelector('input[name="orderType"]');
   if (orderTypeGroup) {
@@ -42,10 +62,8 @@ export function validateForm(form) {
   }
 
   const requiredText = [
-    form.querySelector('#patientName'),
     form.querySelector('#dentistName'),
     form.querySelector('#practiceName'),
-    form.querySelector('#xmlNumber'),
   ];
 
   requiredText.forEach((el) => {
@@ -57,8 +75,39 @@ export function validateForm(form) {
     }
   });
 
+  const firstNameEl = form.querySelector('#patientFirstName');
+  const lastNameEl = form.querySelector('#patientSecondName');
+  const patientNumberEl = form.querySelector('#patientNumber');
+
+  if (firstNameEl && lastNameEl && patientNumberEl) {
+    const hasFullName = !isBlank(firstNameEl.value) && !isBlank(lastNameEl.value);
+    const hasPatientNumber = !isBlank(patientNumberEl.value);
+
+    if (!hasFullName && !hasPatientNumber) {
+      [firstNameEl, lastNameEl, patientNumberEl].forEach((el) => {
+        const field = el.closest('.field');
+        if (field) {
+          setInvalid(field);
+          invalidFields.push(field);
+        }
+      });
+    }
+  }
+
+  // XML-Nr. ist nur Pflicht bei gesetzlich Versicherten
+  const xmlNumberEl = form.querySelector('#xmlNumber');
+  const insuranceEl = form.querySelector('#insurance');
+  if (xmlNumberEl && insuranceEl) {
+    const field = xmlNumberEl.closest('.field');
+    const isStatutory = insuranceEl.value === 'gesetzlich';
+    if (isStatutory && isBlank(xmlNumberEl.value) && field) {
+      setInvalid(field);
+      invalidFields.push(field);
+    }
+  }
+
   const ageEl = form.querySelector('#patientAge');
-  if (ageEl) {
+  if (ageEl && !(isReparatur && exempt.has('patientAge'))) {
     const field = ageEl.closest('.field');
     const age = Number(ageEl.value);
     if ((isBlank(ageEl.value) || Number.isNaN(age) || age <= 0) && field) {
@@ -84,6 +133,8 @@ export function collectFormData(form) {
   const data = Object.fromEntries(formData.entries());
 
   data.orderType = form.querySelector('input[name="orderType"]:checked')?.value ?? '';
+  data.requestType = form.querySelector('input[name="requestType"]:checked')?.value ?? '';
+  data.gesichtsbogen = form.querySelector('#gesichtsbogen')?.checked ?? false;
   data.teeth = {};
   form.querySelectorAll('[data-tooth-cell] select').forEach((select) => {
     const key = select.name.replace('tooth_', '');
@@ -94,6 +145,6 @@ export function collectFormData(form) {
   form.querySelectorAll('.schedule-table select').forEach((select) => {
     data.schedule[select.name] = select.value;
   });
-console.log(data)
+  console.log(data)
   return data;
 }

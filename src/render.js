@@ -1,6 +1,7 @@
 import {
     orderTypes, genderOptions, insuranceOptions, shadeOptions, alloyOptions,
     toothFormOptions, typeOptions, toothStatusOptions, appointmentRows, timeOptions, toothNumbers, toothDefaultStatus,
+    requestTypeOptions, exemptFieldsWhenReparatur,
 } from './data.js';
 
 const escapeHtml = (value) => String(value)
@@ -68,6 +69,21 @@ function selectField({ id, label, options, selectedValue, required = false, comp
   `;
 }
 
+function checkboxField({ id, label, checked = false }) {
+    return `
+    <label class="field checkbox-field" for="${id}">
+      <input
+        id="${id}"
+        name="${id}"
+        type="checkbox"
+        class="control control-checkbox"
+        ${checked ? 'checked' : ''}
+      />
+      <span class="field-label">${escapeHtml(label)}</span>
+    </label>
+  `;
+}
+
 function appointmentRow(row, v = {}) {
     const dayValue = v[`${row.id}_day`] ?? '';
     return `
@@ -131,6 +147,10 @@ function radioPills(name, options, checkedValue) {
 }
 
 export function renderApp(v = {}) {
+    const isReparatur = (v.requestType ?? 'neuantrag') === 'reparatur';
+    const exempt = new Set(exemptFieldsWhenReparatur);
+    const req = (fieldId) => !(isReparatur && exempt.has(fieldId));
+
     return `
     <div class="page-shell">
       <header class="hero">
@@ -145,6 +165,15 @@ export function renderApp(v = {}) {
       </header>
 
       <form id="labForm" class="lab-form" novalidate>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Antragsart</h2>
+          </div>
+          <div class="stack">
+            ${radioPills('requestType', requestTypeOptions, v.requestType ?? 'neuantrag')}
+          </div>
+        </section>
+
         <section class="panel">
           <div class="panel-head">
             <h2>Auftrag & Patient</h2>
@@ -165,17 +194,27 @@ export function renderApp(v = {}) {
     })}
 
             ${inputField({
-        id: 'patientName',
-        label: 'Patient',
-        value: v.patientName ?? '',
-        required: true,
+        id: 'patientFirstName',
+        label: 'Vorname',
+        value: v.patientFirstName ?? '',
+    })}
+
+    ${inputField({
+        id: 'patientSecondName',
+        label: 'Nachname',
+        value: v.patientSecondName ?? '',
+    })} 
+
+${inputField({
+        id: 'patientNumber',
+        label: 'Patientennummer',
     })}
 
             ${inputField({
         id: 'patientAge',
         label: 'Alter',
         value: v.patientAge ?? '',
-        required: true,
+        required: req('patientAge'),
         type: 'number',
     })}
 
@@ -184,14 +223,13 @@ export function renderApp(v = {}) {
         label: 'Geschlecht',
         options: genderOptions,
         selectedValue: v.patientGender ?? '',
-        required: true,
+        required: req('patientGender'),
     })}
 
             ${inputField({
         id: 'xmlNumber',
         label: 'XML-Nr.',
         value: v.xmlNumber ?? '',
-        required: true,
     })}
           </div>
 
@@ -204,12 +242,12 @@ export function renderApp(v = {}) {
     })}
             ${inputField({
         id: 'practiceName',
-        label: 'Praxis / Anschrift',
+        label: 'Praxis - Anschrift',
         value: v.practiceName ? v.practiceName + (v.dentistAddress ? ', ' + v.dentistAddress : '') : '',
         required: true,
     })} ${inputField({
         id: 'practiceEmail',
-        label: 'Praxis / Email',
+        label: 'Praxis - Email',
         value: v.practiceEmail ?? '',
         required: true,
     })}
@@ -218,7 +256,7 @@ export function renderApp(v = {}) {
 
         <section class="panel">
           <div class="panel-head">
-            <h2>Ästhetik & Material</h2> //Pflichtfeld?? Oder soll das select leer sein können
+            <h2>Ästhetik & Material</h2>
           </div>
 
           <div class="grid grid-3">
@@ -227,15 +265,15 @@ export function renderApp(v = {}) {
         label: 'Zahnfarbe',
         options: shadeOptions,
         selectedValue: v.shade ?? '',
-        required: true,
+        required: req('shade'),
     })}
 
             ${selectField({
         id: 'alloy',
-        label: 'Legierung',
+        label: 'Material',
         options: alloyOptions,
         selectedValue: v.alloy ?? '',
-        required: true,
+        required: req('alloy'),
     })}
 
             ${selectField({
@@ -243,9 +281,10 @@ export function renderApp(v = {}) {
         label: 'Zahnform',
         options: toothFormOptions,
         selectedValue: v.toothForm ?? '',
-        required: true,
     })}
+          </div>
 
+          <div class="grid grid-3 top-gap">
             ${selectField({
         id: 'type',
         label: 'Typ',
@@ -254,12 +293,19 @@ export function renderApp(v = {}) {
         required: true,
     })}
           </div>
+
+          <div class="grid grid-3 top-gap">
+            ${checkboxField({
+        id: 'gesichtsbogen',
+        label: 'Gesichtsbogen vorhanden',
+        checked: v.gesichtsbogen === true || v.gesichtsbogen === 'on',
+    })}
+          </div>
         </section>
 
         <section class="panel">
           <div class="panel-head">
             <h2>Zahnstatus</h2>
-            <p>Digitale Zahnkarte im FDI-Schema</p>
           </div>
 
           <div class="tooth-legend">

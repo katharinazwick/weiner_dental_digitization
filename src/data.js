@@ -1,3 +1,10 @@
+export const exemptFieldsWhenReparatur = ['shade', 'alloy', 'patientAge', 'patientGender'];
+
+export const requestTypeOptions = [
+    {value: 'neuantrag', label: 'Neuantrag'},
+    {value: 'reparatur', label: 'Reparatur'},
+];
+
 export const orderTypes = [
     {value: 'regelversorgung', label: 'Regelversorgung'},
     {value: 'gleichartige', label: 'Gleichartige Versorgung'},
@@ -36,12 +43,11 @@ export const alloyOptions = [
 ];
 
 export const toothFormOptions = [
-    {value: 'anatomisch', label: 'anatomisch'},
     {value: '', label: ''},
     {value: 'leicht_ovalt', label: 'leicht oval'},
     {value: 'oval', label: 'oval'},
-    {value: 'rechteckig', label: 'rechteckig'},
-    {value: 'individuell', label: 'individuell'},
+    {value: 'quadratisch', label: 'quadratisch'},
+    {value: 'konisch', label: 'konisch'},
 ];
 
 export const typeOptions = [
@@ -71,6 +77,7 @@ export const appointmentRows = [
     {id: 'anprobe1', label: 'Anprobe 1', required: false},
     {id: 'anprobe2', label: 'Anprobe 2', required: false},
     {id: 'anprobe3', label: 'Anprobe 3', required: false},
+    {id: 'fertigstellung', label: 'Fertigstellung', required: false},
 ];
 
 export const dayOptions = [
@@ -83,8 +90,8 @@ export const dayOptions = [
     {value: 'sa', label: 'Sa'},
 ];
 
-export const timeOptions = Array.from({ length: 29 }, (_, i) => {
-    const totalMinutes = 6 * 60 + i * 30;
+export const timeOptions = Array.from({ length: 21 }, (_, i) => {
+    const totalMinutes = 8 * 60 + i * 30;
     const hh = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
     const mm = totalMinutes % 60 === 0 ? '00' : '30';
     return { value: `${hh}:${mm}`, label: `${hh}:${mm}` };
@@ -100,8 +107,10 @@ export const toothNumbers = {
 export const toothDefaultStatus = 'ok';
 
 export const defaultValues = {
+    requestType: 'neuantrag',
     orderType: 'regelversorgung',
-    patientName: 'Vorname Nachname',
+    patientFirstName: 'Vorname',
+    patientSecondName: 'Nachname',
     dentistName: 'Dr. med. dent. Nachname',
     practiceName: 'Praxis am Park',
     dentistAddress: 'Musterstraße 12, 14482 Potsdam',
@@ -112,7 +121,6 @@ export const defaultValues = {
     xmlNumber: 'XML-2026-0421',
     shade: 'A2',
     alloy: 'CoCr',
-    toothForm: 'anatomisch',
     type: 'krone',
     contractService: 'Keramikverblendete Krone im Seitenzahnbereich',
     privateService: 'Individuelle Farbabstimmung und Hochglanzpolitur',

@@ -6,13 +6,8 @@ import { defaultValues } from './data.js';
 const isTest = new URLSearchParams(window.location.search).has('test');
 
 const app = document.querySelector('#app');
-app.innerHTML = renderApp(isTest ? defaultValues : {});
 
-const form = document.querySelector('#labForm');
-const modalBackdrop = document.querySelector('#modalBackdrop');
-const modalMessage = document.querySelector('#modalMessage');
-const modalClose = document.querySelector('#modalClose');
-const transformBtn = document.querySelector('#transformBtn');
+let form, modalBackdrop, modalMessage, modalClose, transformBtn;
 
 function openModal(message) {
   modalMessage.textContent = message;
@@ -25,56 +20,78 @@ function closeModal() {
   modalClose.focus({ preventScroll: true });
 }
 
-modalClose.addEventListener('click', closeModal);
-modalBackdrop.addEventListener('click', (event) => {
-  if (event.target === modalBackdrop) closeModal();
-  console.log('Button click');
-});
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && !modalBackdrop.hidden) closeModal();
-});
+function render(state) {
+  app.innerHTML = renderApp(state);
+  bindReferences();
+  bindListeners();
+}
 
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
+function bindReferences() {
+  form = document.querySelector('#labForm');
+  modalBackdrop = document.querySelector('#modalBackdrop');
+  modalMessage = document.querySelector('#modalMessage');
+  modalClose = document.querySelector('#modalClose');
+  transformBtn = document.querySelector('#transformBtn');
+}
 
-  const result = validateForm(form);
-  if (!result.valid) {
-    scrollToFirstInvalid(result.invalidFields);
-    openModal('Bitte alle Pflichtfelder ausfüllen.');
-    return;
-  }
+function bindListeners() {
+  modalClose.addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', (event) => {
+    if (event.target === modalBackdrop) closeModal();
+    console.log('Button click');
+  });
 
-  const payload = collectFormData(form);
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-  transformBtn.classList.add('is-loading');
-  transformBtn.textContent = 'Verarbeite…';
+    const result = validateForm(form);
+    if (!result.valid) {
+      scrollToFirstInvalid(result.invalidFields);
+      openModal('Bitte alle Pflichtfelder ausfüllen.');
+      return;
+    }
 
-  try {
-    await sendToLangdock(payload);
-    openModal('Formular geprüft und an Langdock gesendet.');
-  } catch (err) {
-    console.error(err);
-    openModal('Senden fehlgeschlagen. Bitte später erneut versuchen.');
-  } finally {
-    transformBtn.classList.remove('is-loading');
-    transformBtn.textContent = 'Absenden';
-  }
-});
+    const payload = collectFormData(form);
 
-form.addEventListener('input', (event) => {
-  const target = event.target;
-  const field = target.closest('.field');
-  if (!field) return;
-  if (target.matches('[data-required="true"]') && target.value.trim() !== '') {
-    field.classList.remove('is-invalid');
-  }
-});
+    transformBtn.classList.add('is-loading');
+    transformBtn.textContent = 'Verarbeite…';
 
-form.addEventListener('change', (event) => {
-  const target = event.target;
-  const field = target.closest('.field');
-  if (!field) return;
-  if (target.matches('[data-required="true"]') && target.value.trim() !== '') {
-    field.classList.remove('is-invalid');
-  }
-});
+    try {
+      await sendToLangdock(payload);
+      openModal('Formular geprüft und an Langdock gesendet.');
+    } catch (err) {
+      console.error(err);
+      openModal('Senden fehlgeschlagen. Bitte später erneut versuchen.');
+    } finally {
+      transformBtn.classList.remove('is-loading');
+      transformBtn.textContent = 'Absenden';
+    }
+  });
+
+  form.addEventListener('input', (event) => {
+    const target = event.target;
+    const field = target.closest('.field');
+    if (!field) return;
+    if (target.matches('[data-required="true"]') && target.value.trim() !== '') {
+      field.classList.remove('is-invalid');
+    }
+  });
+
+  form.addEventListener('change', (event) => {
+    const target = event.target;
+    const field = target.closest('.field');
+    if (!field) return;
+    if (target.matches('[data-required="true"]') && target.value.trim() !== '') {
+      field.classList.remove('is-invalid');
+    }
+  });
+
+  form.querySelectorAll('input[name="requestType"]').forEach((radio) => {
+    radio.addEventListener('change', () => {
+      const currentState = collectFormData(form);
+      render(currentState);
+    });
+  });
+}
+
+render(isTest ? defaultValues : {});
