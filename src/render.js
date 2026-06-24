@@ -248,16 +248,14 @@ ${inputField({
         id: 'practiceName',
         label: 'Praxis - Anschrift',
         value: v.practiceName ? v.practiceName + (v.dentistAddress ? ', ' + v.dentistAddress : '') : '',
+        required: true,
+        
     })}
             ${inputField({
         id: 'practiceEmail',
         label: 'Praxis - Email',
         value: v.practiceEmail ?? '',
-    })}
-            ${inputField({
-        id: 'practiceId',
-        label: 'Praxis-ID',
-        value: v.practiceId ?? '',
+        required: true,
     })}
           </div>
         </section>
